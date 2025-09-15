@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <!-- Hero Section -->
+  <section class="relative h-[90vh] flex items-center justify-center text-center text-white bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative z-10 px-4">
+      <h1 class="text-4xl md:text-6xl font-bold mb-4">Explore The World With Us</h1>
+      <p class="text-lg md:text-xl mb-6">Discover breathtaking destinations and unforgettable experiences.</p>
+      <a href="#booking" class="bg-yellow-400 text-indigo-900 px-6 py-3 rounded-full font-semibold hover:bg-yellow-300 transition">Start Your Journey</a>
+    </div>
+  </section>
+
+  <!-- Booking Form -->
+  <section id="booking" class="py-16 px-6 bg-gradient-to-r from-indigo-900 to-blue-500 text-white
+                               dark:from-gray-900 dark:to-gray-800 dark:text-gray-100
+                               text-center transition-colors duration-300">
+    <h2 class="text-3xl md:text-4xl font-bold mb-8">Book Your Appointment</h2>
+    <form class="max-w-lg mx-auto grid gap-5" action="/bookings" method="post">
+      <input type="text" placeholder="Full Name"
+        class="p-4 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none" name="name" required>
+
+      <input type="email" placeholder="Email Address"
+        class="p-4 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none" name="email" required>
+
+      <input type="tel" placeholder="Phone Number"
+        class="p-4 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none" name="phone" required>
+
+      <select class="p-4 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none" name="destination" required>
+        <option value="">Select Destination</option>
+        <option value="ahafo">Ahafo</option>
+        <option value="ashanti">Ashanti</option>
+        <option value="bono">Bono</option>
+        <option value="bono east">Bono East</option>
+        <option value="central">Central</option>
+        <option value="eastern">Eastern</option>
+        <option value="greater accra">Greater Accra</option>
+        <option value="north east">North East</option>
+        <option value="northern">Northern</option>
+        <option value="oti">Oti</option>
+        <option value="savannah">Savannah</option>
+        <option value="upper east">Upper East</option>
+        <option value="upper west">Upper West</option>
+        <option value="volta">Volta</option>
+        <option value="western">Western</option>
+        <option value="western north">Western North</option>
+      </select>
+
+      <input type="date" id="date" name="date" required
+        class="p-4 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none">
+
+      <textarea placeholder="Special Requests" rows="4"
+        class="p-4 rounded-lg text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none" name="special_note"></textarea>
+
+      <button type="submit"
+        class="bg-yellow-400 text-indigo-900 dark:bg-yellow-500 dark:text-gray-900 font-semibold py-3 rounded-lg hover:bg-yellow-300 dark:hover:bg-yellow-400 transition">
+        Book Now
+      </button>
+    </form>
+  </section>
+{% endblock %}
