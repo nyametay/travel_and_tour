@@ -1,23 +1,22 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+from dotenv import load_dotenv
 
-# SMTP
-SMTP_SERVER = 'smtp.gmail.com'
-SMTP_PORT = 465
-SMTP_USERNAME = 'nyameget@gmail.com'
-SMTP_PASSWORD = 'xozhynlsirmromlx'
-EMAIL_SENDER = 'nyameget@gmail.com'
+load_dotenv()
 
-# Multiple recipients
+# Load from environment variables
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
+EMAIL_SENDER = os.getenv('EMAIL_SENDER') # verified sender in SendGrid
 RECIPIENTS = [
     "desmondeshun134@gmail.com",
-    "nyameget@gmail.com",
-    "isaac4230220@gmail.com"
+    "guide2@example.com",
+    "guide3@example.com"
 ]
 
 
 def generate_booking_email(booking):
+    """Generate the email content for the booking."""
     customer_name = booking.name
     customer_email = booking.email
     customer_phone = booking.phone
@@ -25,10 +24,8 @@ def generate_booking_email(booking):
     travel_date = booking.travel_date
     special_requests = booking.special_note
 
-    # Subject
     subject = f"New Booking: {destination} – {customer_name}"
 
-    # Plain text body
     body = f"""
 Hello Guide,
 
@@ -45,28 +42,28 @@ Please prepare accordingly and reach out to the customer if needed.
 
 Thank you,
 GlobeTrek Travel Agency
-    """
+"""
 
-    # Create MIMEText message
-    msg = MIMEMultipart()
-    msg["Subject"] = subject
-    msg["From"] = EMAIL_SENDER
-    msg["To"] = ", ".join(RECIPIENTS)  # show all in email header
-
-    msg.attach(MIMEText(body, "plain"))
-
-    return msg
+    return subject, body
 
 
-def send_email_smtp(new_booking):
-    """Send email via SMTP."""
+def send_email_sendgrid(new_booking):
+    """Send booking email via SendGrid API."""
     try:
-        msg = generate_booking_email(new_booking)
-        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.sendmail(EMAIL_SENDER, RECIPIENTS, msg.as_string())
-            print(f"Email sent to {', '.join(RECIPIENTS)}")
+        subject, body = generate_booking_email(new_booking)
+
+        message = Mail(
+            from_email=EMAIL_SENDER,
+            to_emails=RECIPIENTS,
+            subject=subject,
+            plain_text_content=body,
+        )
+
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        response = sg.send(message)
+
+        print(f"✅ Email sent to {', '.join(RECIPIENTS)} (Status: {response.status_code})")
 
     except Exception as e:
-        print(f"Email sending failed: {e}")
+        print(f"❌ Email sending failed: {e}")
         raise

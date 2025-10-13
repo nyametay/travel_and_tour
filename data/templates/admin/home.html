@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlobeTrek Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Tailwind Dark Mode Config
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+
+  <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-blue-600 to-indigo-900 dark:from-gray-800 dark:to-gray-700 text-white sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <h1 class="text-2xl font-bold">GlobeTrek Admin Panel</h1>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="/home" class="hover:text-yellow-300 transition">Home</a>
+          <a href="/destinations" class="hover:text-yellow-300 transition">Destinations</a>
+
+          <!-- Theme Toggle -->
+          <button id="theme-toggle" class="p-2 rounded-full bg-yellow-400 text-indigo-900 hover:bg-yellow-300 transition">
+            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.05 17.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+            </svg>
+            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M20.354 15.354A9 9 0 118.646 3.646 7 7 0 0020.354 15.354z"/>
+            </svg>
+          </button>
+
+          <!-- Logout -->
+          <a href="/admin/logout" class="bg-red-500 px-3 py-2 rounded-md text-sm font-semibold hover:bg-red-400 transition">Logout</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="menu-toggle" class="md:hidden focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile Dropdown Menu -->
+      <div id="mobile-menu" class="hidden md:hidden flex flex-col space-y-3 px-6 pb-4 bg-gradient-to-r from-blue-700 to-indigo-800 dark:from-gray-800 dark:to-gray-700">
+        <a href="/home" class="hover:text-yellow-300 transition">Home</a>
+        <a href="/destinations" class="hover:text-yellow-300 transition">Destinations</a>
+
+        <!-- Theme Toggle (inside menu on mobile) -->
+        <button id="theme-toggle-mobile" class="p-2 w-fit rounded-full bg-yellow-400 text-indigo-900 hover:bg-yellow-300 transition">
+          <svg id="sun-icon-mobile" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M6.05 17.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+          <svg id="moon-icon-mobile" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M20.354 15.354A9 9 0 118.646 3.646 7 7 0 0020.354 15.354z"/>
+          </svg>
+        </button>
+
+        <a href="/admin/logout" class="bg-red-500 px-3 py-2 w-fit rounded-md text-sm font-semibold hover:bg-red-400 transition">Logout</a>
+      </div>
+    </nav>
+  <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="fixed inset-0 flex items-start justify-center mt-20 z-50 pointer-events-none">
+          <div class="space-y-3 w-full max-w-lg px-4" id="flash-container">
+            {% for category, msg in messages %}
+              <div class="flash-msg px-4 py-3 rounded text-sm font-medium flex justify-between items-center pointer-events-auto
+                {% if category == 'success' %}
+                  bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100
+                {% elif category == 'danger' %}
+                  bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100
+                {% elif category == 'warning' %}
+                  bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100
+                {% elif category == 'info' %}
+                  bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100
+                {% else %}
+                  bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200
+                {% endif %}
+              ">
+                <span>{{ msg }}</span>
+                <button type="button" class="ml-4 focus:outline-none" onclick="this.parentElement.remove()">&times;</button>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endwith %}
+  <!-- Main Content -->
+  <div class="p-8 grid gap-8 lg:grid-cols-3">
+
+    <!-- Add Destination Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700 dark:text-yellow-400">Add New Destination</h2>
+      <form id="addDestinationForm" action="/admin/add_destination" method="POST" enctype="multipart/form-data" class="grid gap-4">
+        <input type="text" name="name" placeholder="Destination Name" class="p-3 rounded border dark:bg-gray-700 dark:border-gray-600" required>
+        <textarea name="description" rows="3" placeholder="Short Description" class="p-3 rounded border dark:bg-gray-700 dark:border-gray-600" required></textarea>
+
+        <!-- File Upload -->
+        <div>
+          <label class="block mb-2 text-sm">Upload Image</label>
+          <input type="file" name="image" accept="image/*" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600 w-full" required>
+        </div>
+
+        <button type="submit" class="bg-blue-600 text-white py-2 rounded hover:bg-blue-500 transition">Add Destination</button>
+      </form>
+    </div>
+
+    <!-- Destinations List -->
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 overflow-x-auto">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700 dark:text-yellow-400">Manage Destinations</h2>
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-100 dark:bg-gray-700">
+          <tr>
+            <th class="p-3">Name</th>
+            <th class="p-3">Description</th>
+            <th class="p-3">Image</th>
+            <th class="p-3 text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for destination in destinations %}
+          <tr class="border-b border-gray-200 dark:border-gray-700">
+            <td class="p-3">{{ destination.location_name }}</td>
+            <td class="p-3">{{ destination.description }}</td>
+            <td class="p-3">
+              {% if destination.image_data %}
+                <img src="data:{{ destination.image_mimetype }};base64,{{ destination.image_data|b64encode }}" alt="{{ destination.name }}" class="w-20 h-12 object-cover rounded">
+              {% else %}
+                <span class="text-gray-500 italic">No Image</span>
+              {% endif %}
+            </td>
+            <td class="p-3 text-center">
+              <button class="text-blue-500 hover:underline edit-btn"
+                data-id="{{ destination.id }}"
+                data-name="{{ destination.location_name }}"
+                data-description="{{ destination.description }}"
+                data-image="data:{{ destination.image_mimetype }};base64,{{ destination.image_data|b64encode }}">
+                Edit
+            </button>
+            |
+              <a href="/admin/delete/{{ destination.id }}" class="text-red-500 hover:underline">Delete</a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" class="text-center py-4 text-gray-500">No destinations added yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bookings Section -->
+  <div class="p-8">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 overflow-x-auto">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700 dark:text-yellow-400">Customer Bookings</h2>
+      <table class="w-full text-left border-collapse">
+        <thead class="bg-gray-100 dark:bg-gray-700">
+          <tr>
+            <th class="p-3">Name</th>
+            <th class="p-3">Email</th>
+            <th class="p-3">Phone</th>
+            <th class="p-3">Destination</th>
+            <th class="p-3">Date</th>
+            <th class="p-3">Requests</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+          <tr class="border-b border-gray-200 dark:border-gray-700">
+            <td class="p-3">{{ booking.name }}</td>
+            <td class="p-3">{{ booking.email }}</td>
+            <td class="p-3">{{ booking.phone }}</td>
+            <td class="p-3">{{ booking.destination }}</td>
+            <td class="p-3">{{ booking.travel_date }}</td>
+            <td class="p-3">{{ booking.special_note or '—' }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-center py-4 text-gray-500">No bookings found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl w-full max-w-md">
+      <h2 class="text-xl font-semibold mb-4 text-indigo-700 dark:text-yellow-400">Edit Destination</h2>
+      <form id="editForm" method="POST" enctype="multipart/form-data" class="grid gap-4">
+          <input type="hidden" name="id" id="edit-id">
+
+          <input type="text" name="name" id="edit-name" class="p-3 rounded border dark:bg-gray-700 dark:border-gray-600" required>
+          <textarea name="description" id="edit-description" rows="3" class="p-3 rounded border dark:bg-gray-700 dark:border-gray-600" required></textarea>
+
+          <!-- Image Preview -->
+          <div>
+            <label class="block mb-2 text-sm">Current Image</label>
+            <img id="edit-preview" src="" alt="Preview" class="w-32 h-20 object-cover rounded mb-2 border border-gray-300 dark:border-gray-600">
+            <input type="file" name="image" accept="image/*" class="p-2 rounded border dark:bg-gray-700 dark:border-gray-600">
+          </div>
+
+          <div class="flex justify-end space-x-3">
+              <button type="button" id="cancelEdit" class="px-4 py-2 bg-gray-300 dark:bg-gray-700 rounded">Cancel</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500">Save Changes</button>
+         </div>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='scripts/admin_dashboard.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/notification.js') }}"></script>
+
+</body>
+</html>
