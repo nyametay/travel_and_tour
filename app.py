@@ -11,4 +11,5 @@ if __name__ == '__main__':
         new_admin_.password = 'desmond134'
         db.session.add(new_admin_)
         db.session.commit()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
+
